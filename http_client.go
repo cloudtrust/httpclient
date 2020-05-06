@@ -2,6 +2,7 @@ package httpclient
 
 import (
 	"encoding/json"
+	"strings"
 	"time"
 
 	"fmt"
@@ -76,14 +77,15 @@ func (c *Client) Get(accessToken string, data interface{}, plugins ...plugin.Plu
 		case resp.StatusCode >= 400:
 			return treatErrorStatus(resp)
 		case resp.StatusCode >= 200:
-			switch resp.Header.Get("Content-Type") {
+			var hdr = resp.Header.Get("Content-Type")
+			switch strings.Split(hdr, ";")[0] {
 			case "application/json":
 				return resp.JSON(data)
 			case "application/octet-stream":
 				data = resp.Bytes()
 				return nil
 			default:
-				return fmt.Errorf("%s.%v", MsgErrUnkownHTTPContentType, resp.Header.Get("Content-Type"))
+				return fmt.Errorf("%s.%v", MsgErrUnkownHTTPContentType, hdr)
 			}
 		default:
 			return fmt.Errorf("%s.%v", MsgErrUnknownResponseStatusCode, resp.StatusCode)
