@@ -18,12 +18,20 @@
   version = "v2.0.0"
 
 [[projects]]
-  digest = "1:25ebe6496abb289ef977c081b2d49f56dd97c32db4ca083d37f95923909ced02"
+  digest = "1:a4e1932ad06fc04794b8af07eb167d549bbb402d5a962857f0351fca1fcc0d1c"
+  name = "github.com/golang/mock"
+  packages = ["gomock"]
+  pruneopts = "UT"
+  revision = "a23c5e7c8f7bb73c8ae5d8711815bbd30f3cfac8"
+  version = "v1.5.0"
+
+[[projects]]
+  digest = "1:6078383dbb7405bfa3ce16957f37564e3b716afa29b6eb45ffdb6674624d1e0d"
   name = "github.com/gorilla/mux"
   packages = ["."]
   pruneopts = "UT"
-  revision = "75dcda0896e109a2a22c9315bca3bb21b87b2ba5"
-  version = "v1.7.4"
+  revision = "98cb6bf42e086f6af920b965c38cacc07402d51b"
+  version = "v1.8.0"
 
 [[projects]]
   digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
@@ -42,26 +50,26 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:5e8f46b412421d2d6cceea845d28ac46f3f5a5f60a6e86f0ee75e24fd43a02a9"
+  digest = "1:edb231f4f062fe87e1cc93351e1ee06d4cebf553d1f85f9f3b9b4903df42df20"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = "UT"
-  revision = "3ebf1ddaeb260c4b1ae502a01c7844fa8c1fa0e9"
-  version = "v1.5.1"
+  revision = "acba37e5db06f0093b465a7d47822bf13644b66c"
+  version = "v1.7.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:4d02b57b109d7a6a87d9ed6bf8026f32bfb04f86e5bf49e0d81e1c98cf46a965"
+  digest = "1:98873c8b40ae89798e9de1a1e3420c769ad4c1348db1015c22b8643d9e86216d"
   name = "golang.org/x/net"
   packages = [
     "idna",
     "publicsuffix",
   ]
   pruneopts = "UT"
-  revision = "0ba52f642ac2f9371a88bfdde41f4b4e195a37c0"
+  revision = "e915ea6b2b7d7f3955e2d6d432eaebd7cf5921e7"
 
 [[projects]]
-  digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
+  digest = "1:d343bfab7897dd73ee9bf8172d1fc83d935b7512067856ed596aaf57a9345f3c"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -82,11 +90,11 @@
     "unicode/rangetable",
   ]
   pruneopts = "UT"
-  revision = "342b2e1fbaa52c93f31447ad2c6abc048c63e475"
-  version = "v0.3.2"
+  revision = "e328d63cff14134669501e0e154e4f141c784322"
+  version = "v0.3.6"
 
 [[projects]]
-  digest = "1:8a982874c5980269b7e0d398fb07b5d0385657dd56ff2df3fec2959ddde52133"
+  digest = "1:e957094a53f7233fbf0847e9789ea6b0e41287eaf5179888503c82c3aecabaf7"
   name = "gopkg.in/h2non/gentleman.v2"
   packages = [
     ".",
@@ -105,30 +113,33 @@
     "utils",
   ]
   pruneopts = "UT"
-  revision = "34f7caeaf69f4668a88f8294ec18665fd2756b84"
-  version = "v2.0.4"
+  revision = "f14529a1dee7b7a12b57032fea670377c4030f50"
+  version = "v2.0.5"
 
 [[projects]]
-  digest = "1:d7f1bd887dc650737a421b872ca883059580e9f8314d601f88025df4f4802dce"
-  name = "gopkg.in/yaml.v2"
+  branch = "v3"
+  digest = "1:107a619d3c3bcca214b2b7db810a5dffcd74b5d0262813cb2986e063fae2722f"
+  name = "gopkg.in/yaml.v3"
   packages = ["."]
   pruneopts = "UT"
-  revision = "0b1645d91e851e735d3e23330303ce81f70adbe3"
-  version = "v2.3.0"
+  revision = "496545a6307b2a7d7a710fd516e5e16e8ab62dbc"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
     "github.com/gbrlsnchs/jwt",
+    "github.com/golang/mock/gomock",
     "github.com/gorilla/mux",
     "github.com/pkg/errors",
     "github.com/stretchr/testify/assert",
     "gopkg.in/h2non/gentleman.v2",
     "gopkg.in/h2non/gentleman.v2/context",
     "gopkg.in/h2non/gentleman.v2/plugin",
+    "gopkg.in/h2non/gentleman.v2/plugins/body",
     "gopkg.in/h2non/gentleman.v2/plugins/query",
     "gopkg.in/h2non/gentleman.v2/plugins/timeout",
+    "gopkg.in/h2non/gentleman.v2/plugins/url",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
