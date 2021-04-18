@@ -91,6 +91,9 @@ func (c *Client) readContent(resp *gentleman.Response, data interface{}) error {
 	case "text/plain":
 		*(data.(*string)) = resp.String()
 		return nil
+	case "text/html":
+		*(data.(*string)) = resp.String()
+		return nil
 	case "application/octet-stream", "application/zip", "application/pdf", "text/xml":
 		*(data.(*[]byte)) = resp.Bytes()
 		return nil
