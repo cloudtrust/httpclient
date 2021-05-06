@@ -34,12 +34,12 @@
   version = "v1.8.0"
 
 [[projects]]
-  digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
+  digest = "1:9e1d37b58d17113ec3cb5608ac0382313c5b59470b94ed97d0976e69c7022314"
   name = "github.com/pkg/errors"
   packages = ["."]
   pruneopts = "UT"
-  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
-  version = "v0.8.1"
+  revision = "614d223910a179a466c1767a985424175c39b465"
+  version = "v0.9.1"
 
 [[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
@@ -59,14 +59,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:98873c8b40ae89798e9de1a1e3420c769ad4c1348db1015c22b8643d9e86216d"
+  digest = "1:ee759bdc188ca4904da9d108a2d997971f3d6352bbd350fc199dc7a25bf9d46f"
   name = "golang.org/x/net"
   packages = [
     "idna",
     "publicsuffix",
   ]
   pruneopts = "UT"
-  revision = "e915ea6b2b7d7f3955e2d6d432eaebd7cf5921e7"
+  revision = "0714010a04edd230e18075cd951dd826f04b1e11"
 
 [[projects]]
   digest = "1:d343bfab7897dd73ee9bf8172d1fc83d935b7512067856ed596aaf57a9345f3c"
