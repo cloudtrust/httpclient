@@ -49,14 +49,9 @@ func NewBearerAuthClient(addrAPI string, reqTimeout time.Duration, tokenProvider
 		if err != nil {
 			return nil, err
 		}
-		var host string
-		host, err = extractHostFromToken(accessToken)
-		if err != nil {
-			return nil, err
-		}
+
 		r = r.SetHeader("Authorization", "Bearer "+accessToken)
-		r = r.SetHeader("X-Forwarded-Proto", "https")
-		r.Context.Request.Host = host
+
 		return r, nil
 	})
 }
