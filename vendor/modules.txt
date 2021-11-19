@@ -1,0 +1,46 @@
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+github.com/davecgh/go-spew/spew
+# github.com/gbrlsnchs/jwt/v2 v2.0.0
+## explicit
+github.com/gbrlsnchs/jwt/v2
+# github.com/golang/mock v1.5.0
+## explicit
+github.com/golang/mock/gomock
+github.com/golang/mock/mockgen/model
+# github.com/gorilla/mux v1.8.0
+## explicit
+github.com/gorilla/mux
+# github.com/pkg/errors v0.9.1
+## explicit
+github.com/pkg/errors
+# github.com/pmezard/go-difflib v1.0.0
+## explicit
+github.com/pmezard/go-difflib/difflib
+# github.com/stretchr/testify v1.7.0
+## explicit
+github.com/stretchr/testify/assert
+# golang.org/x/net v0.0.0-20210505214959-0714010a04ed
+## explicit
+golang.org/x/net/publicsuffix
+# golang.org/x/text v0.3.6
+## explicit
+# gopkg.in/h2non/gentleman.v2 v2.0.5
+## explicit
+gopkg.in/h2non/gentleman.v2
+gopkg.in/h2non/gentleman.v2/context
+gopkg.in/h2non/gentleman.v2/middleware
+gopkg.in/h2non/gentleman.v2/mux
+gopkg.in/h2non/gentleman.v2/plugin
+gopkg.in/h2non/gentleman.v2/plugins/body
+gopkg.in/h2non/gentleman.v2/plugins/bodytype
+gopkg.in/h2non/gentleman.v2/plugins/cookies
+gopkg.in/h2non/gentleman.v2/plugins/headers
+gopkg.in/h2non/gentleman.v2/plugins/multipart
+gopkg.in/h2non/gentleman.v2/plugins/query
+gopkg.in/h2non/gentleman.v2/plugins/timeout
+gopkg.in/h2non/gentleman.v2/plugins/url
+gopkg.in/h2non/gentleman.v2/utils
+# gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+## explicit
+gopkg.in/yaml.v3

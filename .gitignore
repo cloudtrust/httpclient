@@ -22,3 +22,6 @@ bin/*
 configs/DEV/*
 **/mock
 .idea/
+
+# Activate vendoring
+!vendor/modules.txt
