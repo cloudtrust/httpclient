@@ -6,7 +6,6 @@ github.com/davecgh/go-spew/spew
 github.com/gbrlsnchs/jwt/v2
 # github.com/golang/mock v1.6.0
 ## explicit; go 1.11
-github.com/golang/mock/gomock
 github.com/golang/mock/mockgen/model
 # github.com/gorilla/mux v1.8.1
 ## explicit; go 1.20
@@ -19,11 +18,12 @@ github.com/pkg/errors
 # github.com/pmezard/go-difflib v1.0.0
 ## explicit
 github.com/pmezard/go-difflib/difflib
-# github.com/stretchr/objx v0.5.1
-## explicit; go 1.13
-# github.com/stretchr/testify v1.8.4
-## explicit; go 1.20
+# github.com/stretchr/testify v1.9.0
+## explicit; go 1.17
 github.com/stretchr/testify/assert
+# go.uber.org/mock v0.5.0
+## explicit; go 1.22
+go.uber.org/mock/gomock
 # golang.org/x/net v0.18.0
 ## explicit; go 1.18
 golang.org/x/net/publicsuffix
