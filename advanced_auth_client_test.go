@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/cloudtrust/httpclient/mock"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestNewMultiRealmTokenClient(t *testing.T) {

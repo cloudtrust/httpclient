@@ -11,9 +11,9 @@ import (
 	"gopkg.in/h2non/gentleman.v2"
 
 	"github.com/cloudtrust/httpclient/mock"
-	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
