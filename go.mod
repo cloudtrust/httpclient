@@ -3,7 +3,7 @@ module github.com/cloudtrust/httpclient
 go 1.22
 
 require (
-	github.com/gbrlsnchs/jwt/v2 v2.0.0
+	github.com/gbrlsnchs/jwt/v3 v3.0.1
 	github.com/golang/mock v1.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/pkg/errors v0.9.1
