@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"time"
 
-	jwt "github.com/gbrlsnchs/jwt/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/pkg/errors"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/context"
@@ -95,16 +95,16 @@ func extractHostFromToken(token string) (string, error) {
 	return u.Host, nil
 }
 
-func extractIssuerFromToken(token string) (string, error) {
-	payload, _, err := jwt.Parse(token)
+func extractIssuerFromToken(tokenStr string) (string, error) {
+	token, _, err := jwt.NewParser().ParseUnverified(tokenStr, jwt.MapClaims{})
 	if err != nil {
 		return "", errors.Wrap(err, MsgErrCannotParse+"."+PrmTokenMsg)
 	}
 
-	var jot Token
-	if err = jwt.Unmarshal(payload, &jot); err != nil {
-		return "", errors.Wrap(err, MsgErrCannotUnmarshal+"."+PrmTokenMsg)
+	issuer, err := token.Claims.GetIssuer()
+	if err != nil {
+		return "", errors.Wrap(err, MsgErrCannotGetIssuer+"."+PrmTokenMsg)
 	}
 
-	return jot.Issuer, nil
+	return issuer, nil
 }

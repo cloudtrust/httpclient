@@ -8,7 +8,7 @@ import (
 // Constants for error management
 const (
 	MsgErrCannotObtain              = "cannotObtain"
-	MsgErrCannotUnmarshal           = "cannotUnmarshal"
+	MsgErrCannotGetIssuer           = "cannotGetIssuer"
 	MsgErrCannotParse               = "cannotParse"
 	MsgErrUnkownHTTPContentType     = "unkownHTTPContentType"
 	MsgErrUnknownResponseStatusCode = "unknownResponseStatusCode"
