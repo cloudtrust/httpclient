@@ -64,49 +64,56 @@ func (c *Client) applyPlugins(req *gentleman.Request, plugins ...plugin.Plugin) 
 	return req, nil
 }
 
-func (c *Client) checkError(resp *gentleman.Response) error {
+func (c *Client) checkError(resp *internalResponse) error {
 	switch {
-	case resp.StatusCode == http.StatusUnauthorized:
+	case resp.StatusCode() == http.StatusUnauthorized:
 		return HTTPError{
-			StatusCode: resp.StatusCode,
+			StatusCode: resp.StatusCode(),
 			Message:    string(resp.Bytes()),
 		}
-	case resp.StatusCode >= 400:
+	case resp.StatusCode() >= 400:
 		return treatErrorStatus(resp)
-	case resp.StatusCode >= 200:
+	case resp.StatusCode() >= 200:
 		return nil
 	default:
 		return HTTPError{
-			StatusCode: resp.StatusCode,
+			StatusCode: resp.StatusCode(),
 			Message:    string(resp.Bytes()),
 		}
 	}
 }
 
-func (c *Client) readContent(resp *gentleman.Response, data interface{}) error {
-	var hdr = resp.Header.Get("Content-Type")
+func (c *Client) readContent(resp *internalResponse, data any) (retError error) {
+	defer func() {
+		if err := recover(); err != nil {
+			retError = fmt.Errorf("Unexpected panic. Ensure data is declared with the expected type: %v", err)
+		}
+	}()
+	var hdr = resp.GetHeader("Content-Type")
 	switch strings.Split(hdr, ";")[0] {
 	case "application/json":
-		return resp.JSON(data)
+		retError = resp.JSON(data)
 	case "text/plain":
 		*(data.(*string)) = resp.String()
-		return nil
+		retError = nil
 	case "text/html":
 		*(data.(*string)) = resp.String()
-		return nil
+		retError = nil
 	case "application/octet-stream", "application/zip", "application/pdf", "text/xml":
 		*(data.(*[]byte)) = resp.Bytes()
-		return nil
+		retError = nil
 	default:
 		if len(resp.Bytes()) == 0 {
-			return nil
+			retError = nil
+		} else {
+			retError = fmt.Errorf("%s.%v", MsgErrUnkownHTTPContentType, hdr)
 		}
-		return fmt.Errorf("%s.%v", MsgErrUnkownHTTPContentType, hdr)
 	}
+	return retError
 }
 
 // Get is a HTTP GET method.
-func (c *Client) Get(data interface{}, plugins ...plugin.Plugin) error {
+func (c *Client) Get(data any, plugins ...plugin.Plugin) error {
 	var err error
 	var req = c.httpClient.Get()
 	req, err = c.applyPlugins(req, plugins...)
@@ -114,13 +121,14 @@ func (c *Client) Get(data interface{}, plugins ...plugin.Plugin) error {
 		return err
 	}
 
-	var resp *gentleman.Response
+	var gresp *gentleman.Response
 	{
-		resp, err = req.Do()
+		gresp, err = req.Do()
 		if err != nil {
 			return errors.Wrap(err, MsgErrCannotObtain+"."+PrmResponse)
 		}
 
+		var resp = buildInternalResponse(gresp)
 		err = c.checkError(resp)
 		if err != nil {
 			return err
@@ -130,7 +138,7 @@ func (c *Client) Get(data interface{}, plugins ...plugin.Plugin) error {
 }
 
 // Post is a HTTP POST method
-func (c *Client) Post(data interface{}, plugins ...plugin.Plugin) (string, error) {
+func (c *Client) Post(data any, plugins ...plugin.Plugin) (string, error) {
 	var err error
 	var req = c.httpClient.Post()
 	req, err = c.applyPlugins(req, plugins...)
@@ -138,18 +146,19 @@ func (c *Client) Post(data interface{}, plugins ...plugin.Plugin) (string, error
 		return "", err
 	}
 
-	var resp *gentleman.Response
+	var gresp *gentleman.Response
 	{
-		resp, err = req.Do()
+		gresp, err = req.Do()
 		if err != nil {
 			return "", errors.Wrap(err, MsgErrCannotObtain+"."+PrmResponse)
 		}
+		var resp = buildInternalResponse(gresp)
 
 		err = c.checkError(resp)
 		if err != nil {
 			return "", err
 		}
-		return resp.Header.Get("Location"), c.readContent(resp, data)
+		return resp.GetHeader("Location"), c.readContent(resp, data)
 	}
 }
 
@@ -169,7 +178,7 @@ func (c *Client) Delete(plugins ...plugin.Plugin) error {
 			return errors.Wrap(err, MsgErrCannotObtain+"."+PrmResponse)
 		}
 
-		return c.checkError(resp)
+		return c.checkError(buildInternalResponse(resp))
 	}
 }
 
@@ -189,7 +198,7 @@ func (c *Client) Put(plugins ...plugin.Plugin) error {
 			return errors.Wrap(err, MsgErrCannotObtain+"."+PrmResponse)
 		}
 
-		return c.checkError(resp)
+		return c.checkError(buildInternalResponse(resp))
 	}
 }
 
@@ -204,17 +213,17 @@ func CreateQueryPlugins(paramKV ...string) []plugin.Plugin {
 	return plugins
 }
 
-func treatErrorStatus(resp *gentleman.Response) error {
-	var response map[string]interface{}
+func treatErrorStatus(resp *internalResponse) error {
+	var response map[string]any
 	err := json.Unmarshal(resp.Bytes(), &response)
 	if message, ok := response["errorMessage"]; ok && err == nil {
 		return HTTPError{
-			StatusCode: resp.StatusCode,
+			StatusCode: resp.StatusCode(),
 			Message:    message.(string),
 		}
 	}
 	return HTTPError{
-		StatusCode: resp.StatusCode,
+		StatusCode: resp.StatusCode(),
 		Message:    string(resp.Bytes()),
 	}
 }

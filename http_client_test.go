@@ -212,7 +212,7 @@ func TestProcessResponse(t *testing.T) {
 		assert.Equal(t, []byte(response), resp)
 	})
 	t.Run("Content-Type application/json", func(t *testing.T) {
-		var resp map[string]interface{}
+		var resp map[string]any
 		var plugins = CreateQueryPlugins("content", "application/json")
 		plugins = append(plugins, url.Path(path))
 		var err = client.Get(&resp, plugins...)
@@ -238,5 +238,83 @@ func TestProcessResponse(t *testing.T) {
 		plugins = append(plugins, url.Path(path))
 		var err = client.Get(nil, plugins...)
 		assert.Nil(t, err)
+	})
+}
+
+func createResponse(mimeType string, text string) *internalResponse {
+	var resp = buildInternalResponse(&gentleman.Response{
+		Ok:          false,
+		Error:       nil,
+		ClientError: false,
+		ServerError: false,
+		StatusCode:  200,
+		Header:      http.Header{"Content-Type": []string{mimeType}},
+		RawResponse: &http.Response{
+			Status:     "200 OK",
+			StatusCode: 200,
+			Proto:      "HTTP/1.0",
+			ProtoMajor: 1,
+			ProtoMinor: 0,
+		},
+	})
+	resp.bytes = []byte(text)
+	return resp
+}
+
+func TestReadContent(t *testing.T) {
+	var mockCtrl = gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	var client, _ = New("http://my.url", time.Minute, nil)
+
+	t.Run("Content type is plain text", func(t *testing.T) {
+		var respText = "Hello, world!"
+		var resp = createResponse("text/plain", respText)
+
+		t.Run("Provided data has type any", func(t *testing.T) {
+			var anyData any
+			var err = client.readContent(resp, &anyData)
+			assert.NotNil(t, err)
+		})
+		t.Run("Provided data has type string", func(t *testing.T) {
+			var stringData string
+			var err = client.readContent(resp, &stringData)
+			assert.Nil(t, err)
+			assert.Equal(t, respText, stringData)
+		})
+	})
+
+	t.Run("Content type is html", func(t *testing.T) {
+		var respText = "<html><body>Content</body></html>"
+		var resp = createResponse("text/html", respText)
+
+		t.Run("Provided data has type any", func(t *testing.T) {
+			var anyData any
+			var err = client.readContent(resp, &anyData)
+			assert.NotNil(t, err)
+		})
+		t.Run("Provided data has type string", func(t *testing.T) {
+			var stringData string
+			var err = client.readContent(resp, &stringData)
+			assert.Nil(t, err)
+			assert.Equal(t, respText, stringData)
+		})
+	})
+
+	t.Run("Content type is JSON", func(t *testing.T) {
+		var respText = `{"key1": "value1", "key2": "value2"}`
+		var resp = createResponse("application/json", respText)
+
+		t.Run("Provided data has type any", func(t *testing.T) {
+			var anyData any
+			var err = client.readContent(resp, &anyData)
+			assert.Nil(t, err)
+			assert.IsType(t, map[string]any{}, anyData)
+		})
+		t.Run("Provided data has type string", func(t *testing.T) {
+			var stringData string
+			var err = client.readContent(resp, &stringData)
+			assert.NotNil(t, err)
+		})
 	})
 }
