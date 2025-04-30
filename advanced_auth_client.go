@@ -16,18 +16,20 @@ type OidcTokenProvider interface {
 
 // RestClient interface
 type RestClient interface {
-	Get(data interface{}, plugins ...plugin.Plugin) error
-	Post(data interface{}, plugins ...plugin.Plugin) (string, error)
+	Get(data any, plugins ...plugin.Plugin) error
+	Post(data any, plugins ...plugin.Plugin) (string, error)
 	Delete(plugins ...plugin.Plugin) error
 	Put(plugins ...plugin.Plugin) error
 }
 
+// MultiRealmTokenClient struct
 type MultiRealmTokenClient struct {
 	client        *Client
 	tokenProvider OidcTokenProvider
 	realm         string
 }
 
+// NewMultiRealmTokenClient creates a MultiRealmTokenClient instance
 func NewMultiRealmTokenClient(addrAPI string, reqTimeout time.Duration, tokenProvider OidcTokenProvider) (*MultiRealmTokenClient, error) {
 	var client, err = New(addrAPI, reqTimeout)
 	if err != nil {
@@ -40,6 +42,7 @@ func NewMultiRealmTokenClient(addrAPI string, reqTimeout time.Duration, tokenPro
 	}, nil
 }
 
+// ForRealm returns a realm-specific RestClient
 func (mrtc *MultiRealmTokenClient) ForRealm(realm string) RestClient {
 	return &MultiRealmTokenClient{
 		client:        mrtc.client,
@@ -64,7 +67,7 @@ func (mrtc *MultiRealmTokenClient) withRealmAuth(next func(pluginsWithAuth ...pl
 }
 
 // Get is a HTTP GET method.
-func (mrtc *MultiRealmTokenClient) Get(data interface{}, plugins ...plugin.Plugin) error {
+func (mrtc *MultiRealmTokenClient) Get(data any, plugins ...plugin.Plugin) error {
 	var _, err = mrtc.withRealmAuth(func(pluginsWithAuth ...plugin.Plugin) (string, error) {
 		return "", mrtc.client.Get(data, pluginsWithAuth...)
 	}, plugins...)
@@ -72,7 +75,7 @@ func (mrtc *MultiRealmTokenClient) Get(data interface{}, plugins ...plugin.Plugi
 }
 
 // Post is a HTTP POST method
-func (mrtc *MultiRealmTokenClient) Post(data interface{}, plugins ...plugin.Plugin) (string, error) {
+func (mrtc *MultiRealmTokenClient) Post(data any, plugins ...plugin.Plugin) (string, error) {
 	return mrtc.withRealmAuth(func(pluginsWithAuth ...plugin.Plugin) (string, error) {
 		return mrtc.client.Post(data, pluginsWithAuth...)
 	}, plugins...)
