@@ -129,6 +129,42 @@ func TestHttpClientAuthentication(t *testing.T) {
 			assert.Nil(t, err)
 		})
 	})
+	t.Run("HTTP client with contextual bearer authentication", func(t *testing.T) {
+		httpClient, _ := NewBearerAuthClientContext(ts.URL, time.Minute, func(ctx any) (string, error) {
+			if ctx == nil {
+				return "invalid", nil
+			}
+			var strContext = ctx.(string)
+			return accessTokenValid + strContext, nil
+		})
+		t.Run("missing context", func(t *testing.T) {
+			mockHandler.EXPECT().ServeHTTP(gomock.Any(), gomock.Any()).DoAndReturn(func(w http.ResponseWriter, r *http.Request) {
+				assert.Equal(t, "Bearer invalid", r.Header.Get("Authorization"))
+				w.WriteHeader(http.StatusNoContent)
+			})
+			var res string
+			var err = httpClient.Get(&res, url.Path("/sample"))
+			assert.Nil(t, err)
+		})
+		t.Run("get", func(t *testing.T) {
+			mockHandler.EXPECT().ServeHTTP(gomock.Any(), gomock.Any()).DoAndReturn(func(w http.ResponseWriter, r *http.Request) {
+				assert.Equal(t, "Bearer "+accessTokenValid+"mygetctx", r.Header.Get("Authorization"))
+				w.WriteHeader(http.StatusNoContent)
+			})
+			var res string
+			var err = httpClient.WithContext("mygetctx").Get(&res, url.Path("/sample"))
+			assert.Nil(t, err)
+		})
+		t.Run("post", func(t *testing.T) {
+			mockHandler.EXPECT().ServeHTTP(gomock.Any(), gomock.Any()).DoAndReturn(func(w http.ResponseWriter, r *http.Request) {
+				assert.Equal(t, "Bearer "+accessTokenValid+"mypostctx", r.Header.Get("Authorization"))
+				w.WriteHeader(http.StatusNoContent)
+			})
+			var res string
+			var _, err = httpClient.WithContext("mypostctx").Post(&res, url.Path("/sample"))
+			assert.Nil(t, err)
+		})
+	})
 	t.Run("HTTP client with access token", func(t *testing.T) {
 		httpClient, _ := New(ts.URL, time.Minute)
 		mockHandler.EXPECT().ServeHTTP(gomock.Any(), gomock.Any()).DoAndReturn(func(w http.ResponseWriter, r *http.Request) {

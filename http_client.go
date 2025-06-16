@@ -18,9 +18,11 @@ import (
 
 // Client is the HTTP client.
 type Client struct {
-	apiURL      *url.URL
-	httpClient  *gentleman.Client
-	reqUpdaters []func(*gentleman.Request) (*gentleman.Request, error)
+	apiURL         *url.URL
+	httpClient     *gentleman.Client
+	reqUpdaters    []func(*gentleman.Request) (*gentleman.Request, error)
+	ctxReqUpdaters []func(any, *gentleman.Request) (*gentleman.Request, error)
+	ctx            any
 }
 
 // New returns a keycloak client.
@@ -41,12 +43,18 @@ func New(addrAPI string, reqTimeout time.Duration, reqUpdaters ...func(*gentlema
 	}
 
 	var client = &Client{
-		apiURL:      uAPI,
-		httpClient:  httpClient,
-		reqUpdaters: reqUpdaters,
+		apiURL:         uAPI,
+		httpClient:     httpClient,
+		reqUpdaters:    reqUpdaters,
+		ctxReqUpdaters: nil,
+		ctx:            nil,
 	}
 
 	return client, nil
+}
+
+func (c *Client) addContextRequestUpdater(updater func(any, *gentleman.Request) (*gentleman.Request, error)) {
+	c.ctxReqUpdaters = append(c.ctxReqUpdaters, updater)
 }
 
 // applyPlugins apply all the plugins to the request req, apply also includes internal reqUpdaters
@@ -57,6 +65,12 @@ func (c *Client) applyPlugins(req *gentleman.Request, plugins ...plugin.Plugin) 
 	}
 	for _, updater := range c.reqUpdaters {
 		req, err = updater(req)
+		if err != nil {
+			return nil, err
+		}
+	}
+	for _, updater := range c.ctxReqUpdaters {
+		req, err = updater(c.ctx, req)
 		if err != nil {
 			return nil, err
 		}
@@ -110,6 +124,17 @@ func (c *Client) readContent(resp *internalResponse, data any) (retError error) 
 		}
 	}
 	return retError
+}
+
+// WithContext returns a new client using a context which will be used to call ctxReqUpdaters
+func (c *Client) WithContext(ctx any) *Client {
+	return &Client{
+		apiURL:         c.apiURL,
+		httpClient:     c.httpClient,
+		reqUpdaters:    c.reqUpdaters,
+		ctxReqUpdaters: c.ctxReqUpdaters,
+		ctx:            ctx,
+	}
 }
 
 // Get is a HTTP GET method.

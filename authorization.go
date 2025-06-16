@@ -56,6 +56,22 @@ func NewBearerAuthClient(addrAPI string, reqTimeout time.Duration, tokenProvider
 	})
 }
 
+// NewBearerAuthClientContext creates a new HTTP client using a bearer authentication. Context value will be provided to the token provider
+func NewBearerAuthClientContext(addrAPI string, reqTimeout time.Duration, tokenProvider func(ctx any) (string, error)) (*Client, error) {
+	var client, err = New(addrAPI, reqTimeout)
+	client.addContextRequestUpdater(func(ctx any, r *gentleman.Request) (*gentleman.Request, error) {
+		var accessToken, err = tokenProvider(ctx)
+		if err != nil {
+			return nil, err
+		}
+
+		r = r.SetHeader("Authorization", "Bearer "+accessToken)
+
+		return r, nil
+	})
+	return client, err
+}
+
 // SetAccessToken creates a plugin to set an access token which is a valid token
 func SetAccessToken(accessToken string) plugin.Plugin {
 	var plugin, _ = SetAccessTokenE(accessToken)
