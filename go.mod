@@ -1,6 +1,6 @@
 module github.com/cloudtrust/httpclient
 
-go 1.25.3
+go 1.27.1
 
 require (
 	github.com/golang-jwt/jwt/v5 v5.3.1
@@ -15,5 +15,5 @@ require (
 require (
 	github.com/nbio/st v0.0.0-20140626010706-e9e8d9816f32 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
-	golang.org/x/net v0.30.0 // indirect
+	golang.org/x/net v0.58.0 // indirect
 )
